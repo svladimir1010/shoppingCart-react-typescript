@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button, Card } from 'react-bootstrap'
-import { useSoppingCart } from '../context/ShoppingCartContext'
+import { useShoppingCartContext } from '../context/ShoppingCartContext'
 import { formatCurrency } from '../utilites/formatCurrency'
 
 type StoreItemProps = {
@@ -12,7 +12,7 @@ type StoreItemProps = {
 }
 
 const StoreItem = ( { id, name, price, imgUrl }: StoreItemProps ) => {
-    const { getItemQuantity, increaseCartQuantity, decreaseCartQuantity, removeFromCart } = useSoppingCart()
+    const { getItemQuantity, increaseCartQuantity, decreaseCartQuantity, removeFromCart } = useShoppingCartContext()
 
     const quantity = getItemQuantity(id)
 

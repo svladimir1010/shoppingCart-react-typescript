@@ -1,10 +1,10 @@
 import React from 'react'
 import { Button, Container, Nav, Navbar as NavbarBs } from 'react-bootstrap'
 import { NavLink } from 'react-router-dom'
-import { useSoppingCart } from '../context/ShoppingCartContext'
+import { useShoppingCartContext } from '../context/ShoppingCartContext'
 
 const Navbar = () => {
-    const { openCart, cartQuantity } = useSoppingCart()
+    const { openCart, cartQuantity } = useShoppingCartContext()
 
     return (
         <NavbarBs sticky="top" className="bg-white shadow-sm mb-3" style={ { height: '12vh' } }>

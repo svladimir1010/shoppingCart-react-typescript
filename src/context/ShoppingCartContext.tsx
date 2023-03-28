@@ -1,5 +1,6 @@
 import { createContext, ReactNode, useContext, useState } from 'react'
 import ShoppingCart from '../components/ShoppingCart'
+import { useLocalStorage } from '../hooks/useLocalStorage'
 
 type ShoppingCartContextProviderProps = {
     children: ReactNode
@@ -25,12 +26,15 @@ const ShoppingCartContext = createContext( {} as ShoppingCartContext )
 
 
 export const ShoppingCartContextProvider = ( { children }: ShoppingCartContextProviderProps ) => {
-    const [ cartItems, setCartItems ] = useState<CartItem[]>( [] )  // место хранения єлементов корзины по id
-
     const [ isOpen, setIsOpen ] = useState( false ) // показать - скрыть корзину
 
+    const [ cartItems, setCartItems ]
+        = useLocalStorage<CartItem[]>( 'shopping-cart', [] )
+    // хранение єлементов корзины в localStorage [{"id":1,"quantity":3},{"id":2,"quantity":1}]
+    // const [ cartItems, setCartItems ] = useState<CartItem[]>( [] )  // место хранения єлементов корзины по id
+
     const cartQuantity = cartItems.reduce(
-        ( quantity, currentItem ) => currentItem.quantity + quantity,
+        ( quantity: number, item: CartItem ) => item.quantity + quantity,
         0,
     )
 
@@ -38,10 +42,10 @@ export const ShoppingCartContextProvider = ( { children }: ShoppingCartContextPr
     const closeCart = () => setIsOpen( false )
 
     const getItemQuantity = ( id: number ) =>
-        cartItems.find( item => item.id === id )?.quantity || 0
+        cartItems.find( ( item: CartItem ) => item.id === id )?.quantity || 0
 
     const increaseCartQuantity = ( id: number ) =>
-        setCartItems( currentItems => {
+        setCartItems( ( currentItems: CartItem[] ) => {
             if( !currentItems.find( item => item.id === id ) ) {
                 return [ ...currentItems, { id, quantity: 1 } ]
             } else {
@@ -56,7 +60,7 @@ export const ShoppingCartContextProvider = ( { children }: ShoppingCartContextPr
         } )
 
     const decreaseCartQuantity = ( id: number ) =>
-        setCartItems( currentItems => {
+        setCartItems( ( currentItems: CartItem[] ) => {
             if( currentItems.find( item => item.id === id )?.quantity === 1 ) {
                 return currentItems.filter( item => item.id !== id )
             } else {
@@ -71,7 +75,7 @@ export const ShoppingCartContextProvider = ( { children }: ShoppingCartContextPr
         } )
 
     const removeFromCart = ( id: number ) =>
-        setCartItems( currentItems =>
+        setCartItems( ( currentItems: CartItem[] ) =>
             currentItems.filter( item => item.id !== id ),
         )
 
@@ -88,10 +92,10 @@ export const ShoppingCartContextProvider = ( { children }: ShoppingCartContextPr
             closeCart,
         } }>
             { children }
-            <ShoppingCart isOpen={isOpen}/>
+            <ShoppingCart isOpen={ isOpen }/>
         </ShoppingCartContext.Provider>
     )
 }
 
-export const useSoppingCart = () => useContext( ShoppingCartContext )
+export const useShoppingCartContext = () => useContext( ShoppingCartContext )
 
